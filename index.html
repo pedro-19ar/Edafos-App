@@ -4,21 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ciencia de Suelos Interactivo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- SEO Best Practices: Meta descriptions -->
+    <meta name="description" content="Plataforma interactiva avanzada para el aprendizaje de pedogénesis, factores de formación y taxonomía de suelos (USDA/FAO).">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0f172a;
-            --surface-color: #1e293b;
-            --surface-hover: #334155;
+            --bg-color: #0b1120;
+            --surface-color: rgba(30, 41, 59, 0.6);
+            --surface-solid: #1e293b;
+            --surface-hover: rgba(51, 65, 85, 0.8);
             --primary-color: #3b82f6;
             --primary-hover: #2563eb;
+            --secondary-color: #8b5cf6;
             --success-color: #10b981;
             --error-color: #ef4444;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --font-family: 'Inter', sans-serif;
-            --border-radius: 16px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-display: 'Outfit', sans-serif;
+            --border-radius: 20px;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -32,28 +37,172 @@
             flex-direction: column;
             align-items: center;
             padding: 40px 20px;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+            background-attachment: fixed;
         }
 
-        h1, h2, h3 { color: var(--text-main); font-weight: 700; }
+        h1, h2, h3 { font-family: var(--font-display); font-weight: 700; color: var(--text-main); }
         
-        header { text-align: center; margin-bottom: 40px; }
-        header h1 { font-size: 2.5em; margin-bottom: 10px; background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        header p { color: var(--text-muted); font-size: 1.1em; }
+        header { text-align: center; margin-bottom: 50px; }
+        header h1 { 
+            font-size: 3em; 
+            margin-bottom: 15px; 
+            background: linear-gradient(135deg, #60a5fa, #c084fc); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            letter-spacing: -0.5px;
+        }
+        header p { color: var(--text-muted); font-size: 1.2em; max-width: 600px; margin: 0 auto; line-height: 1.6;}
 
-        .container { width: 100%; max-width: 800px; }
+        .container { width: 100%; max-width: 900px; }
+
+        /* ==================== MAIN MENU ==================== */
+        #main-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .chapter-card {
+            background: var(--surface-color);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: var(--border-radius);
+            padding: 40px 30px;
+            text-align: left;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chapter-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            opacity: 0.5;
+            transition: var(--transition);
+        }
+
+        .chapter-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(59, 130, 246, 0.1);
+            border-color: rgba(255,255,255,0.15);
+            background: rgba(30, 41, 59, 0.8);
+        }
+
+        .chapter-card:hover::before { opacity: 1; }
+
+        .chapter-number {
+            font-size: 1em;
+            color: #a78bfa;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-family: var(--font-display);
+        }
+
+        .chapter-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .chapter-desc {
+            color: var(--text-muted);
+            font-size: 1em;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+        
+        .chapter-meta {
+            margin-top: 25px;
+            font-size: 0.85em;
+            color: var(--primary-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ==================== STUDY AREA ==================== */
+        #study-area {
+            display: none;
+            width: 100%;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 20px;
+        }
+
+        .current-chapter-title {
+            font-family: var(--font-display);
+            font-size: 1.3em;
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+
+        .btn-back {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95em;
+        }
+
+        .btn-back:hover {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-main);
+            transform: translateX(-4px);
+            border-color: rgba(255,255,255,0.2);
+        }
 
         /* Navigation Tabs */
-        .tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; background: rgba(30, 41, 59, 0.5); padding: 8px; border-radius: 20px; backdrop-filter: blur(10px); }
+        .tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; background: rgba(30, 41, 59, 0.4); padding: 8px; border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05);}
         .tab-btn {
             background: transparent;
             color: var(--text-muted);
             border: none;
             padding: 12px 30px;
-            font-size: 1.1em;
+            font-size: 1.05em;
             font-weight: 600;
             cursor: pointer;
             border-radius: 14px;
             transition: var(--transition);
+            font-family: var(--font-display);
         }
         .tab-btn:hover { color: var(--text-main); background: rgba(255,255,255,0.05); }
         .tab-btn.active { background: var(--primary-color); color: white; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); }
@@ -69,10 +218,10 @@
 
         /* Flashcards */
         .flashcard-wrapper { display: flex; flex-direction: column; align-items: center; }
-        .flashcard-container { perspective: 1000px; width: 100%; max-width: 650px; height: 350px; margin-bottom: 30px; }
+        .flashcard-container { perspective: 1200px; width: 100%; max-width: 700px; height: 380px; margin-bottom: 30px; }
         .flashcard { 
             width: 100%; height: 100%; position: relative; 
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); 
             transform-style: preserve-3d; cursor: pointer; 
         }
         .flashcard.flip { transform: rotateY(180deg); }
@@ -81,42 +230,43 @@
             backface-visibility: hidden; display: flex; flex-direction: column; 
             align-items: center; justify-content: center; text-align: center; 
             padding: 40px; border-radius: var(--border-radius); 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3); 
             border: 1px solid rgba(255,255,255,0.08);
         }
-        .front { background: linear-gradient(145deg, var(--surface-color), #0f172a); font-size: 1.5em; font-weight: 600; line-height: 1.4; }
+        .front { background: linear-gradient(145deg, var(--surface-solid), #0f172a); font-size: 1.5em; font-weight: 600; line-height: 1.5; }
         .back { 
-            background: linear-gradient(145deg, var(--primary-color), #1d4ed8); 
+            background: linear-gradient(145deg, #1e3a8a, #312e81); 
             transform: rotateY(180deg); 
             display: flex; flex-direction: column; justify-content: center;
         }
-        .back .correct-answer { font-size: 1.3em; font-weight: 700; margin-bottom: 20px; color: #fff; background: rgba(0,0,0,0.2); padding: 10px 20px; border-radius: 10px;}
-        .back .rationale { font-size: 1.05em; color: rgba(255,255,255,0.95); line-height: 1.6; }
-        .hint { margin-top: auto; font-size: 0.85em; color: var(--text-muted); padding-top: 15px; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px;}
+        .back .correct-answer { font-size: 1.4em; font-weight: 700; margin-bottom: 20px; color: #fff; background: rgba(0,0,0,0.25); padding: 12px 25px; border-radius: 12px;}
+        .back .rationale { font-size: 1.05em; color: rgba(255,255,255,0.9); line-height: 1.6; }
+        .hint { margin-top: auto; font-size: 0.85em; color: var(--text-muted); padding-top: 15px; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;}
+        .fc-counter { position: absolute; top: 20px; right: 20px; font-size: 0.9em; color: var(--text-muted); font-weight: 600;}
 
         /* Controls */
         .controls { display: flex; justify-content: center; gap: 15px; width: 100%; }
         .btn {
-            background-color: var(--surface-color); color: var(--text-main);
+            background-color: var(--surface-solid); color: var(--text-main);
             border: 1px solid rgba(255,255,255,0.1); padding: 14px 28px;
             cursor: pointer; border-radius: 12px; font-size: 1.05em; font-weight: 600;
             transition: var(--transition);
             display: flex; align-items: center; justify-content: center; min-width: 130px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .btn:hover { background-color: var(--surface-hover); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.2); }
+        .btn:hover { background-color: var(--surface-hover); transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.2);}
         .btn:active { transform: translateY(0); }
         .btn-primary { background-color: var(--primary-color); border: none; }
         .btn-primary:hover { background-color: var(--primary-hover); }
 
         /* Quiz */
         .quiz-card { 
-            background: var(--surface-color); padding: 40px; 
-            border-radius: var(--border-radius); box-shadow: 0 10px 40px rgba(0,0,0,0.4); 
+            background: var(--surface-solid); padding: 45px; 
+            border-radius: var(--border-radius); box-shadow: 0 15px 40px rgba(0,0,0,0.3); 
             border: 1px solid rgba(255,255,255,0.08);
         }
         .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
-        .quiz-progress { color: var(--text-muted); font-size: 1em; font-weight: 600; letter-spacing: 0.5px;}
+        .quiz-progress { color: var(--text-muted); font-size: 1.05em; font-weight: 600; letter-spacing: 0.5px;}
         .quiz-score { background: rgba(16, 185, 129, 0.15); color: var(--success-color); padding: 8px 16px; border-radius: 20px; font-size: 1em; font-weight: 700; border: 1px solid rgba(16, 185, 129, 0.3);}
         
         .question { font-size: 1.4em; margin-bottom: 35px; font-weight: 600; line-height: 1.5;}
@@ -126,11 +276,12 @@
             border-radius: 12px; cursor: pointer; transition: var(--transition);
             border: 1px solid rgba(255,255,255,0.06);
             font-size: 1.1em; color: #e2e8f0;
+            display: flex; align-items: center;
         }
-        .options li:hover { background: rgba(255,255,255,0.08); transform: translateX(8px); border-color: rgba(255,255,255,0.1); }
-        .options li.correct { background: rgba(16, 185, 129, 0.2); border-color: var(--success-color); transform: translateX(0); }
-        .options li.wrong { background: rgba(239, 68, 68, 0.2); border-color: var(--error-color); transform: translateX(0); }
-        .options li.disabled { pointer-events: none; opacity: 0.7; }
+        .options li:hover { background: rgba(255,255,255,0.08); transform: translateX(8px); border-color: rgba(255,255,255,0.15); }
+        .options li.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success-color); transform: translateX(0); }
+        .options li.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--error-color); transform: translateX(0); }
+        .options li.disabled { pointer-events: none; opacity: 0.8; }
         
         .feedback { 
             margin-top: 30px; padding: 25px; border-radius: 12px; font-size: 1.05em; 
@@ -138,22 +289,22 @@
         }
         .feedback.success { background: rgba(16, 185, 129, 0.1); border-left: 5px solid var(--success-color); }
         .feedback.error { background: rgba(239, 68, 68, 0.1); border-left: 5px solid var(--error-color); }
-        .feedback-title { font-weight: 700; margin-bottom: 10px; font-size: 1.2em; }
+        .feedback-title { font-weight: 700; margin-bottom: 10px; font-size: 1.2em; font-family: var(--font-display);}
         
         .quiz-footer { margin-top: 35px; display: flex; justify-content: flex-end; }
         
         /* Final Score Screen */
         .final-score { text-align: center; padding: 50px 30px; display: none; }
-        .final-score h2 { font-size: 2.2em; margin-bottom: 40px; }
+        .final-score h2 { font-size: 2.2em; margin-bottom: 40px; font-family: var(--font-display);}
         .score-circle { 
             width: 180px; height: 180px; border-radius: 50%; 
-            background: conic-gradient(var(--success-color) 0%, var(--surface-color) 0%);
+            background: conic-gradient(var(--success-color) 0%, var(--surface-solid) 0%);
             display: flex; align-items: center; justify-content: center;
             margin: 0 auto 40px; position: relative; box-shadow: 0 0 30px rgba(16, 185, 129, 0.2);
         }
         .score-circle::before {
             content: ''; position: absolute; inset: 12px; border-radius: 50%;
-            background: var(--surface-color);
+            background: var(--surface-solid);
         }
         .score-text { position: relative; font-size: 2.5em; font-weight: 700; z-index: 1; color: white;}
     </style>
@@ -162,442 +313,151 @@
 
 <div class="container">
     <header>
-        <h1>🌱 Ciencia de Suelos</h1>
-        <p>Aprende pedogénesis, taxonomía y factores de formación de forma interactiva.</p>
+        <h1>Ciencia de Suelos Interactivo</h1>
+        <p>Aprende pedogénesis, factores de formación y taxonomía avanzada mediante flashcards y quizzes dinámicos.</p>
     </header>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('flashcards')" id="tab-flashcards">Flashcards</button>
-        <button class="tab-btn" onclick="switchTab('quiz')" id="tab-quiz">Quiz Interactivo</button>
-    </div>
-
-    <!-- FLASHCARDS SECTION -->
-    <section id="sec-flashcards" class="section active">
-        <div class="flashcard-wrapper">
-            <div class="flashcard-container" onclick="flipCard()">
-                <div class="flashcard" id="flashcard">
-                    <div class="face front">
-                        <span id="fc-front">Cargando...</span>
-                        <span class="hint">Toca para voltear la tarjeta</span>
-                    </div>
-                    <div class="face back">
-                        <div class="correct-answer" id="fc-back-ans"></div>
-                        <div class="rationale" id="fc-back-rat"></div>
-                    </div>
+    <!-- VISTA: MENÚ PRINCIPAL -->
+    <div id="main-menu">
+        <h2 style="margin-bottom: 30px; font-size: 1.8em; color: var(--text-main);">Selecciona un Módulo</h2>
+        <div class="cards-grid">
+            <div class="chapter-card" onclick="openChapter('chapter1', 'Capítulo 1: Factores de Formación')">
+                <div class="chapter-number">Capítulo 1</div>
+                <div class="chapter-title">Factores de Formación</div>
+                <div class="chapter-desc">Estudia la influencia del clima, organismos, relieve, material parental y tiempo en la evolución del suelo.</div>
+                <div class="chapter-meta">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    40 Preguntas
                 </div>
             </div>
-            <div class="controls">
-                <button class="btn" onclick="prevCard()">Anterior</button>
-                <button class="btn" onclick="randomCard()">Aleatoria</button>
-                <button class="btn btn-primary" onclick="nextCard()">Siguiente</button>
+            
+            <div class="chapter-card" onclick="openChapter('chapter2', 'Capítulo 2: Procesos Pedogenéticos')">
+                <div class="chapter-number">Capítulo 2</div>
+                <div class="chapter-title">Procesos Pedogenéticos</div>
+                <div class="chapter-desc">Comprende los procesos de adición, pérdida, translocación y transformación (gleización, laterización, etc).</div>
+                <div class="chapter-meta">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    40 Preguntas
+                </div>
             </div>
-        </div>
-    </section>
 
-    <!-- QUIZ SECTION -->
-    <section id="sec-quiz" class="section">
-        <div class="quiz-card" id="quiz-active-area">
-            <div class="quiz-header">
-                <span class="quiz-progress" id="quiz-progress">Pregunta 1 / 10</span>
-                <span class="quiz-score">Puntuación: <span id="score-val">0</span></span>
-            </div>
-            <div class="question" id="quiz-question">Cargando pregunta...</div>
-            <ul class="options" id="quiz-options"></ul>
-            <div class="feedback" id="quiz-feedback">
-                <div class="feedback-title" id="feedback-title"></div>
-                <div class="feedback-text" id="feedback-text"></div>
-            </div>
-            <div class="quiz-footer">
-                <button class="btn btn-primary" onclick="nextQuiz()" id="next-quiz-btn" style="display:none;">Siguiente Pregunta</button>
+            <div class="chapter-card" onclick="openChapter('chapter20', 'Capítulo 20: Clasificación de los Suelos')">
+                <div class="chapter-number">Capítulo 20</div>
+                <div class="chapter-title">Clasificación Taxonómica</div>
+                <div class="chapter-desc">Domina los órdenes, epipedones y endopedones de la Soil Taxonomy USDA y la Base Referencial Mundial (FAO).</div>
+                <div class="chapter-meta">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    40 Preguntas
+                </div>
             </div>
         </div>
-        
-        <div class="quiz-card final-score" id="quiz-final-area">
-            <h2>¡Quiz Completado!</h2>
-            <div class="score-circle" id="score-circle">
-                <span class="score-text" id="final-score-text">0%</span>
-            </div>
-            <p style="margin-bottom: 40px; font-size: 1.2em; color: var(--text-muted);" id="final-msg">Has terminado todas las preguntas.</p>
-            <button class="btn btn-primary" onclick="restartQuiz()" style="margin: 0 auto;">Volver a Intentar</button>
+    </div>
+
+    <!-- VISTA: ÁREA DE ESTUDIO -->
+    <div id="study-area">
+        <div class="header-actions">
+            <button class="btn-back" onclick="goHome()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Volver al menú principal
+            </button>
+            <div class="current-chapter-title" id="current-chapter-title">Capítulo X</div>
         </div>
-    </section>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('flashcards')" id="tab-flashcards">Modo Flashcards</button>
+            <button class="tab-btn" onclick="switchTab('quiz')" id="tab-quiz">Modo Quiz (Examen)</button>
+        </div>
+
+        <!-- FLASHCARDS SECTION -->
+        <section id="sec-flashcards" class="section active">
+            <div class="flashcard-wrapper">
+                <div class="flashcard-container" onclick="flipCard()">
+                    <div class="flashcard" id="flashcard">
+                        <div class="face front">
+                            <div class="fc-counter" id="fc-counter">1 / 40</div>
+                            <span id="fc-front">Cargando...</span>
+                            <span class="hint">Toca la tarjeta para ver la respuesta</span>
+                        </div>
+                        <div class="face back">
+                            <div class="correct-answer" id="fc-back-ans"></div>
+                            <div class="rationale" id="fc-back-rat"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="controls">
+                    <button class="btn" onclick="prevCard()">Anterior</button>
+                    <button class="btn" onclick="randomCard()">Aleatoria</button>
+                    <button class="btn btn-primary" onclick="nextCard()">Siguiente</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUIZ SECTION -->
+        <section id="sec-quiz" class="section">
+            <div class="quiz-card" id="quiz-active-area">
+                <div class="quiz-header">
+                    <span class="quiz-progress" id="quiz-progress">Pregunta 1 / 40</span>
+                    <span class="quiz-score">Puntuación: <span id="score-val">0</span></span>
+                </div>
+                <div class="question" id="quiz-question">Cargando pregunta...</div>
+                <ul class="options" id="quiz-options"></ul>
+                <div class="feedback" id="quiz-feedback">
+                    <div class="feedback-title" id="feedback-title"></div>
+                    <div class="feedback-text" id="feedback-text"></div>
+                </div>
+                <div class="quiz-footer">
+                    <button class="btn btn-primary" onclick="nextQuiz()" id="next-quiz-btn" style="display:none;">Siguiente Pregunta</button>
+                </div>
+            </div>
+            
+            <div class="quiz-card final-score" id="quiz-final-area">
+                <h2>¡Módulo Completado!</h2>
+                <div class="score-circle" id="score-circle">
+                    <span class="score-text" id="final-score-text">0%</span>
+                </div>
+                <p style="margin-bottom: 40px; font-size: 1.2em; color: var(--text-muted);" id="final-msg">Has terminado todas las preguntas.</p>
+                <button class="btn btn-primary" onclick="restartQuiz()" style="margin: 0 auto;">Reintentar Examen</button>
+            </div>
+        </section>
+    </div>
 </div>
 
+<!-- Cargar datos externos -->
+<script src="data.js"></script>
+
 <script>
-    // Datos generados
-    const data = [
-    // ==========================================
-    // CAPÍTULO 1: FACTORES DE FORMACIÓN
-    // ==========================================
-    {
-        q: "Si la precipitación (P) supera con creces la evapotranspiración potencial (ETP), ¿cuál es el destino pedogenético más probable de las bases del suelo?",
-        options: ["Acumulación como carbonatos secundarios", "Intensa lixiviación y acidificación del medio", "Fijación irreversible en arcillas 2:1", "Precipitación en forma de sales solubles"],
-        correct: 1,
-        rationale: "El exceso de humedad (P > ETP) genera lixiviación constante, arrastrando las bases fuera del perfil y disminuyendo el pH."
-    },
-    {
-        q: "De acuerdo con el modelo de Holdridge, la biotemperatura (rango donde hay crecimiento vegetal) oscila entre:",
-        options: ["0 °C y 30 °C", "5 °C y 35 °C", "10 °C y 40 °C", "-5 °C y 25 °C"],
-        correct: 0,
-        rationale: "La biotemperatura excluye las temperaturas donde las plantas entran en latencia térmica (menores a 0°C y mayores a 30°C)."
-    },
-    {
-        q: "En rocas ígneas, un enfriamiento muy lento del magma a grandes profundidades genera una textura:",
-        options: ["Afanítica (Extrusiva)", "Vítrea (Piroclástica)", "Fanerítica o granular (Intrusiva)", "Porfídica (Hipoabisal)"],
-        correct: 2,
-        rationale: "El enfriamiento lento permite el desarrollo de cristales grandes y bien definidos, típico de rocas plutónicas como el granito o el gabro."
-    },
-    {
-        q: "En el diagrama de variación (SiO2 vs Álcalis), un Gabro o Basalto se caracteriza por tener:",
-        options: ["Alto SiO2 (>60%) y bajos álcalis", "Bajo SiO2 (~45-52%) y bajos álcalis (<5%)", "Bajo SiO2 y muy altos álcalis (>15%)", "Alto SiO2 y altos álcalis"],
-        correct: 1,
-        rationale: "Las rocas básicas (máficas) son pobres en sílice y ricas en ferromagnesianos, con bajos contenidos de sodio y potasio."
-    },
-    {
-        q: "Estructuralmente, los filosilicatos están compuestos por láminas de:",
-        options: ["Octaedros de Silicio y Tetraedros de Aluminio", "Tetraedros de Silicio y Octaedros de Aluminio o Magnesio", "Cadenas dobles de inosilicatos", "Anillos cíclicos de carbonatos"],
-        correct: 1,
-        rationale: "La unidad básica de un filosilicato combina una hoja tetraédrica (Si-O) y una hoja octaédrica (Al-OH o Mg-OH)."
-    },
-    {
-        q: "Las arcillas del tipo 1:1, como la Caolinita, se caracterizan en el suelo por:",
-        options: ["Alta sustitución isomórfica y expansibilidad", "Ser tectosilicatos primarios", "Baja sustitución isomórfica y baja actividad físico-química", "Estar compuestas por dos tetraedros y un octaedro"],
-        correct: 2,
-        rationale: "Al tener un enlace rígido y casi nula sustitución isomórfica, son arcillas de baja actividad (LAC), dominantes en trópicos húmedos."
-    },
-    {
-        q: "Si la lámina externa de octaedros de una arcilla es de brucita (Mg3(OH)6), formando una estructura 2:1:1, hablamos de:",
-        options: ["Clorita", "Esmectita", "Vermiculita", "Haloisita"],
-        correct: 0,
-        rationale: "La clorita posee una capa intercalar extra de octaedros de magnesio (brucita), lo que le quita expansibilidad."
-    },
-    {
-        q: "Los aluminosilicatos no cristalinos (sin ordenamiento de tetraedros/octaedros) con alta actividad química típicos de Andisoles son:",
-        options: ["Sesquióxidos de hierro", "Micas hidratadas", "Alofano", "Ferrihidrita"],
-        correct: 2,
-        rationale: "El alofano carece de espectro a rayos X (amorfo) y es el producto primario de alteración de cenizas volcánicas."
-    },
-    {
-        q: "En la serie de estabilidad a la meteorización, ¿cuál es el mineral primario más resistente que predomina en las arenas colombianas?",
-        options: ["Olivino", "Cuarzo", "Hornblenda", "Biotita"],
-        correct: 1,
-        rationale: "El cuarzo es un tectosilicato altamente estable al no poseer bases ni elementos oxidables en su estructura."
-    },
-    {
-        q: "Las bacterias litotróficas del género Thiobacillus participan activamente en la pedogénesis mediante:",
-        options: ["Fijación de nitrógeno simbiótico", "Oxidación de compuestos inorgánicos (Fe2+ a Fe3+, S a H2SO4)", "Formación exclusiva de micorrizas", "Descomposición rápida de lignina"],
-        correct: 1,
-        rationale: "Obtienen su energía oxidando hierro y azufre, propiciando acidificación y formación de minerales como la jarosita."
-    },
-    {
-        q: "¿Qué grupo de microorganismos prospera mejor bajo condiciones de suelos muy ácidos (pH < 5.0) para descomponer materia orgánica leñosa?",
-        options: ["Bacterias Gram positivas", "Cianobacterias", "Hongos (Basidiomycetes, Deuteromycetes)", "Protozoarios"],
-        correct: 2,
-        rationale: "Los hongos toleran mejor la acidez extrema que las bacterias y poseen enzimas complejas (celulasas, fenolasas) para romper lignina."
-    },
-    {
-        q: "La fracción del humus más resistente, que no es soluble ni en ácido ni en álcali y se asocia fuertemente a las arcillas, se llama:",
-        options: ["Ácido Fúlvico", "Ácido Húmico", "Humina", "Ácido Himatomelánico"],
-        correct: 2,
-        rationale: "La humina es el estado máximo de polimerización, formando complejos inseparables con los silicatos del suelo."
-    },
-    {
-        q: "En una vertiente (relieve), los suelos de las posiciones más altas suelen presentar:",
-        options: ["Mayor espesor por cumulización", "Colores grises por mal drenaje", "Menor espesor por dominio de procesos de denudación y erosión", "Abundancia de arcillas expansivas in situ"],
-        correct: 2,
-        rationale: "Las partes altas son netamente eluviales/erosionales, impidiendo la formación de solums muy profundos en comparación con las depresiones."
-    },
-    {
-        q: "La edad de un suelo pedogenéticamente hablando se enmarca predominantemente en el período:",
-        options: ["Cretáceo", "Cuaternario (Pleistoceno y Holoceno)", "Precámbrico", "Carbonífero"],
-        correct: 1,
-        rationale: "Muy pocos suelos son anteriores al Pleistoceno; la pedogénesis (tiempo de evolución actual) actúa sobre materiales cuaternarios."
-    },
-    {
-        q: "El proceso mediante el cual los microorganismos transforman restos orgánicos en NH3, NO3-, SO4= y bases libres se llama:",
-        options: ["Humificación", "Mineralización", "Lessivage", "Podzolización"],
-        correct: 1,
-        rationale: "La mineralización es la vía catabólica que lleva de compuestos orgánicos complejos a iones inorgánicos simples (nutrientes)."
-    },
-    {
-        q: "El índice de meteorización (Si/Al y Bases/Al) al avanzar la alteración de un saprolito de andesita tenderá a:",
-        options: ["Aumentar drásticamente", "Mantenerse constante", "Disminuir drásticamente", "Flutuar estacionalmente"],
-        correct: 2,
-        rationale: "Al lixiviarse las bases y la sílice (muy solubles) frente al aluminio (residual), el cociente numérico cae progresivamente."
-    },
-    {
-        q: "En el ecosistema edáfico, un nemátodo migratorio o un protozoario cilioforo (hidrobios) requieren estrictamente de:",
-        options: ["Luz solar directa", "Ambiente anaeróbico", "Agua en el espacio poroso", "Texturas exclusivamente arcillosas"],
-        correct: 2,
-        rationale: "Al ser 'hidrobios', su locomoción y supervivencia dependen de las películas de la fase líquida en los microporos."
-    },
-    {
-        q: "La formación de costras superficiales que limitan la emergencia de plantas suele ser causada por:",
-        options: ["Impacto de gotas de lluvia en suelos con baja estabilidad estructural", "Alta actividad de lombrices endógeas", "Exceso de materia orgánica fíbrica", "Congelamiento y descongelamiento cíclico"],
-        correct: 0,
-        rationale: "El impacto disgregador del agua sella los macroporos con arcillas dispersas, endureciéndose al secar."
-    },
-    {
-        q: "Las endomicorrizas arbusculares (MVA) son críticas en trópicos porque:",
-        options: ["Fijan nitrógeno del aire", "Atacan las raíces como parásitos obligados", "Aumentan la absorción de P y Zn poco móviles", "Inhiben la formación de agregados"],
-        correct: 2,
-        rationale: "Extienden la red de exploración radicular disolviendo e interceptando fosfatos fijados en suelos muy meteorizados."
-    },
-    {
-        q: "Si la relación C/N de un residuo orgánico (ej. paja de trigo) es muy amplia (80:1), su adición al suelo provocará temporalmente:",
-        options: ["Rápida mineralización y liberación de nitratos", "Inmovilización de nitrógeno por la microbiota", "Disminución neta del volumen de poros", "Formación inmediata de huminas de alta calidad"],
-        correct: 1,
-        rationale: "Los microorganismos, al carecer de nitrógeno en el residuo para construir sus proteínas, consumen el N disponible en el suelo."
-    },
+    // Variables de Estado Global
+    let currentData = [];
+    let currentCard = 0;
+    let currentQuiz = 0;
+    let score = 0;
+    let quizQuestions = [];
 
-    // ==========================================
-    // CAPÍTULO 2: PROCESOS PEDOGENÉTICOS
-    // ==========================================
-    {
-        q: "El proceso global de 'Transformaciones' en el suelo incluye mecánicas como:",
-        options: ["Erosión y Lixiviación", "Humificación, Rubefacción y Gleización", "Lessivage y Eluviación", "Cumulización y Littering"],
-        correct: 1,
-        rationale: "Transforman in situ un material en otro, alterando color o estructura sin sacarlo del perfil general del suelo."
-    },
-    {
-        q: "La 'Gleización' es típica del régimen ácuico y ocurre debido a:",
-        options: ["Oxidación de Fe en medios secos", "Reducción de Fe y Mn por saturación de agua y falta de oxígeno", "Acumulación de sales de sodio", "Translocación de arcillas silicatadas"],
-        correct: 1,
-        rationale: "La saturación impide la entrada de O2; los m.o. reducen el Fe férrico a ferroso, generando matrices grises o verdosas."
-    },
-    {
-        q: "La 'Ferruginación' es el estado más avanzado de la deshidratación y síntesis de óxidos de Fe, imprimiendo al suelo un color:",
-        options: ["Blanco (Álbico)", "Pardo o marrón", "Gris azulado", "Rojo intenso"],
-        correct: 3,
-        rationale: "La hematita (óxido de Fe deshidratado) domina en procesos avanzados de oxidación tropical, tiñendo el suelo de rojo."
-    },
-    {
-        q: "Un horizonte eluvial que ha perdido arcillas y óxidos al extremo de quedar blanquecino por dominio de cuarzo desnudo se denomina:",
-        options: ["Cámbico", "Álbico", "Óxico", "Plágeno"],
-        correct: 1,
-        rationale: "El 'alb' significa blanco; es la máxima expresión pedogenética de la eluviación (lavado) de coloides pigmentantes."
-    },
-    {
-        q: "La edafoturbación producida por la expansión/contracción cíclica de arcillas 2:1 que genera slickensides se denomina:",
-        options: ["Bioturbación", "Crioturbación", "Argiloturbación (Vertización)", "Antroturbación"],
-        correct: 2,
-        rationale: "La dinámica de las esmectitas mezcla el suelo físicamente al secarse y mojarse, destruyendo horizontes genéticos convencionales."
-    },
-    {
-        q: "El proceso de 'Melanización' está íntimamente ligado a la formación de epipedones:",
-        options: ["Ócricos y Álbicos", "Mólicos, Melánicos y Úmbricos", "Kándicos y Argílicos", "Sálicos y Gypsicos"],
-        correct: 1,
-        rationale: "Consiste en el oscurecimiento del suelo mineral por la adición, mezcla e inmovilización de materia orgánica estabilizada."
-    },
-    {
-        q: "La 'Ferralitización' (o Laterización) exige una intensa meteorización química manifestada como:",
-        options: ["Aumento de silicatos primarios", "Desilicación profunda (pérdida de SiO2) y acumulación residual de Fe/Al", "Acumulación masiva de carbonato cálcico", "Formación de esmectitas a partir de cenizas"],
-        correct: 1,
-        rationale: "En trópicos húmedos continuos, se lixivia la sílice y quedan atrás sesquióxidos libres, formando Oxisoles."
-    },
-    {
-        q: "El 'Lessivage' (Argiluviación) se define genéticamente como:",
-        options: ["La migración física de arcillas finas en suspensión hacia el subsuelo", "La precipitación química de arcillas a partir de iones", "El lavado de bases del complejo de cambio", "La destrucción mecánica de macroagregados"],
-        correct: 0,
-        rationale: "Es el movimiento de arcilla silicatada preexistente desde el horizonte A o E hacia el B, formando cutanes (argílico)."
-    },
-    {
-        q: "En la 'Andolización', el proceso central es la alteración moderada de materiales volcánicos que conduce a:",
-        options: ["Síntesis de amorfos inorgánicos (alofano) y alta acumulación de complejos humus-metal", "Lavado total del perfil formando arenas blancas", "Compactación natural formando un duripán", "Acumulación exclusiva de sales de yeso"],
-        correct: 0,
-        rationale: "La ceniza se meteoriza rápido formando amorfos, los cuales inmovilizan la materia orgánica, originando los Andisoles."
-    },
-    {
-        q: "El proceso responsable de generar un horizonte cementado irreversiblemente por sílice secundaria se denomina:",
-        options: ["Gleización", "Podzolización", "Silicificación (Resilicación) formando Duripán", "Calcificación"],
-        correct: 2,
-        rationale: "La sílice disuelta percola y precipita cementando partículas y formando un horizonte Bqm (duripán)."
-    },
-    {
-        q: "La 'Podzolización' clásica requiere un medio:",
-        options: ["Neutro y cálido", "Fuertemente ácido, donde los ácidos orgánicos quelatan y translocan Fe y Al hacia el subsuelo", "Alcalino y árido, para precipitar carbonatos", "Saturado en agua todo el año para formar turba"],
-        correct: 1,
-        rationale: "Las coníferas o biomasas similares acidifican el medio; la MO disuelve Fe/Al y los precipita abajo formando el horizonte Espódico."
-    },
-    {
-        q: "La pérdida neta de material edáfico por impacto de gotas de lluvia y arrastre superficial se enmarca en:",
-        options: ["Erosión Pluvial", "Lixiviación", "Eluviación", "Antroturbación"],
-        correct: 0,
-        rationale: "A diferencia de la lixiviación (solución) o eluviación (suspensión interna), la erosión remueve los sólidos fuera de los linderos del pedón."
-    },
-    {
-        q: "Si en un perfil se observa un horizonte B de 30cm que NO muestra acumulación, sino solo alteración de la roca (cambio de color/estructura), el proceso es:",
-        options: ["Argiluviación", "Formación de horizonte Cámbico", "Podzolización", "Cumulización"],
-        correct: 1,
-        rationale: "El horizonte Cámbico (Bw) evidencia transformación in situ (meteorización, braunificación) sin fuerte translocación."
-    },
-    {
-        q: "Las pérdidas de bases (Ca, Mg, K, Na) en solución que abandonan el perfil del suelo hacia las aguas subterráneas se definen como:",
-        options: ["Erosión hídrica", "Lixiviación o lavado", "Decalcificación superficial", "Subsidencia"],
-        correct: 1,
-        rationale: "Es el proceso químico global dominante en climas lluviosos que desatura el complejo de cambio y acidifica el suelo."
-    },
-    {
-        q: "La 'Leucinización' se refiere a un efecto visual en el horizonte que consiste en:",
-        options: ["Oscurecimiento por adición de humus", "Enrojecimiento por deshidratación de hierro", "Aclaramiento por pérdida o destrucción de materia orgánica", "Azulamiento por exceso de agua"],
-        correct: 2,
-        rationale: "Es el proceso inverso a la melanización; el lavado o degradación de pigmentos orgánicos aclara el color del horizonte (Ej. horizonte E)."
-    },
-    {
-        q: "El 'Littering' es el proceso de adición de hojas y ramas en la superficie. Si la tasa de adición supera la de descomposición, se forma:",
-        options: ["Epipedón Argílico", "Horizonte Álbico", "Epipedón Hístico o capa O (mantillo)", "Duripán"],
-        correct: 2,
-        rationale: "La acumulación no mineralizada genera capas orgánicas puras (Oa, Oe, Oi), típicas en climas fríos o muy húmedos."
-    },
-    {
-        q: "La 'Calcificación' forma un horizonte Cálcico (Bk) mediante precipitación de CaCO3. Esto ocurre casi exclusivamente en climas:",
-        options: ["Perúdicos (Lluvia constante extrema)", "Áridos, Semiáridos o Ústicos secos", "Isohipertérmicos húmedos", "Páramos lluviosos"],
-        correct: 1,
-        rationale: "Requiere que la precipitación sea insuficiente para lixiviar los carbonatos fuera del perfil, precipitando en el subsuelo."
-    },
-    {
-        q: "La desalinización se produce eficientemente si el suelo:",
-        options: ["Tiene un nivel freático superficial y alta ETP", "Tiene buen drenaje y agua de infiltración abundante", "Es arcilloso y con estructura masiva", "Recibe fertilizantes amoniacales"],
-        correct: 1,
-        rationale: "El lavado de sales solubles (Pérdida) requiere flujo de agua descendente y macroporosidad (buen drenaje)."
-    },
-    {
-        q: "Si en un Inceptisol joven ocurre 'Esponjamiento', físicamente el suelo está experimentando:",
-        options: ["Aumento de porosidad y soltura por actividad biótica o ciclos físicos", "Pérdida de porosidad por pisoteo de ganado", "Cementación por sílice (Duripán)", "Cierre de poros por expansión de esmectitas"],
-        correct: 0,
-        rationale: "El loosening (esponjamiento) es el aumento de vacíos generados por raíces, fauna o procesos de agregación natural."
-    },
-    {
-        q: "La 'Solodización' o 'Alcalinización' ocurre cuando en el complejo de cambio se acumula un ión específico que dispersa las arcillas:",
-        options: ["Calcio (Ca2+)", "Aluminio (Al3+)", "Sodio (Na+)", "Hidrógeno (H+)"],
-        correct: 2,
-        rationale: "El sodio rompe los flóculos (dispersión), colapsando la estructura y formando horizontes nátricos muy duros y alcalinos."
-    },
-
-    // ==========================================
-    // CAPÍTULO 20: LA CLASIFICACIÓN DE LOS SUELOS
-    // ==========================================
-    {
-        q: "¿Qué rasgo distingue a un Epipedón Mólico de un Epipedón Úmbrico?",
-        options: ["El color (uno es oscuro, el otro claro)", "La cantidad de materia orgánica (uno tiene >10%, el otro <1%)", "La saturación de bases (Mólico ≥ 50%, Úmbrico < 50%)", "El espesor (uno es profundo, el otro superficial)"],
-        correct: 2,
-        rationale: "Ambos son oscuros, espesos y ricos en carbono, pero el Móolico es eutrófico (fértil) y el Úmbrico distrófico (lavado/ácido)."
-    },
-    {
-        q: "El Epipedón Melánico es exclusivo de los Andisoles, caracterizándose por poseer:",
-        options: ["Un Índice Melánico ≤ 1.70, indicando ácidos húmicos tipo A", "Más del 50% de carbonatos libres", "Colores blancos por dominancia de cuarzo", "Saturación de sodio mayor al 15%"],
-        correct: 0,
-        rationale: "Un IM bajo evidencia un alto grado de polimerización (ácidos húmicos muy maduros), dando el color negro azabache típico de Andisoles."
-    },
-    {
-        q: "Para clasificar un Endopedón como 'Argílico' (Bt), ¿qué evidencia morfológica es obligatoria?",
-        options: ["Cementación masiva de hierro", "Más del 15% de CaCO3 precipitado", "Slickensides y grietas poligonales", "Acumulación iluvial de arcillas silicatadas (cutanes/películas)"],
-        correct: 3,
-        rationale: "El rasgo diagnóstico central del argílico es la migración y deposición de arcilla (lessivage) observable como cerosidad en los poros o agregados."
-    },
-    {
-        q: "Si un horizonte subsuperficial tiene acumulación iluvial de arcilla pero su CIC es menor a 16 cmol/kg de arcilla (baja actividad), se denomina:",
-        options: ["Argílico", "Kándico", "Cámbico", "Nátrico"],
-        correct: 1,
-        rationale: "El horizonte Kándico representa un estado más avanzado de alteración, donde dominan las arcillas LAC (1:1) o sesquióxidos."
-    },
-    {
-        q: "El Endopedón 'Óxico' (Bo), característico de los Oxisoles tropicales, se define por tener:",
-        options: ["Menos del 10% de minerales meteorizables y baja CIC", "Más de 30% de arcillas expansivas tipo esmectita", "Capas de ceniza volcánica inalterada", "Acumulación iluvial de humus y aluminio"],
-        correct: 0,
-        rationale: "Representa el máximo grado de evolución; el material es cuarzo y sesquióxidos, sin reservas primarias para liberar nuevos nutrientes."
-    },
-    {
-        q: "El Endopedón Espódico, definitorio de los Espodosoles, presenta acumulaciones iluviales de:",
-        options: ["Arcillas dispersas por sodio", "Materiales amorfos activos de materia orgánica y Aluminio (con o sin Fe)", "Carbonato de Calcio y Magnesio", "Yeso y otras sales solubles"],
-        correct: 1,
-        rationale: "Es el horizonte de deposición de la podzolización, frecuentemente rojo oscuro a negro (Bhs), situado debajo de un horizonte Álbico (E)."
-    },
-    {
-        q: "Un suelo con régimen de humedad 'Ácuico' se caracteriza por:",
-        options: ["Estar seco 90 días consecutivos al año", "Evapotranspiración que supera a la precipitación todo el año", "Estar saturado con agua y libre de oxígeno el tiempo suficiente para reducir el hierro", "Inundación por aguas salinas exclusivamente"],
-        correct: 2,
-        rationale: "El régimen ácuico implica anaerobiosis temporal o permanente, generando gleización (moteos y matrices grises)."
-    },
-    {
-        q: "El régimen de temperatura 'Isohipertérmico' aplica a suelos que presentan:",
-        options: ["Temperatura media anual < 8 °C", "Temperatura media anual > 22 °C y mínima variación estacional", "Temperatura media anual entre 8 °C y 15 °C", "Permafrost constante"],
-        correct: 1,
-        rationale: "El prefijo 'Iso' indica variaciones de menos de 5°C entre verano e invierno (típico del trópico), e 'hipertérmico' indica alta temperatura."
-    },
-    {
-        q: "En el Sistema de Clasificación USDA, el Orden de los suelos que se agrietan fuertemente en sequía, se baten a sí mismos y tienen >30% de arcilla es:",
-        options: ["Alfisoles", "Inceptisoles", "Vertisoles", "Mollisoles"],
-        correct: 2,
-        rationale: "Los Vertisoles están dominados por arcillas expansivas (esmectitas) que causan argiloturbación constante."
-    },
-    {
-        q: "La diferencia fundamental al nivel de Orden entre un Alfisol y un Ultisol recae en:",
-        options: ["El contenido total de arena", "La profundidad de la roca madre", "La saturación de bases (Alfisol >35%; Ultisol <35%)", "El régimen de humedad exclusivo de cada uno"],
-        correct: 2,
-        rationale: "Ambos tienen horizonte Argílico o Kándico, pero el Ultisol representa un estadio más lixiviado, ácido y empobrecido en bases."
-    },
-    {
-        q: "Si la nomenclatura de un Gran Grupo es 'Hapludands', podemos afirmar con seguridad que pertenece al Orden:",
-        options: ["Andisoles", "Alfisoles", "Aridisoles", "Ultisoles"],
-        correct: 0,
-        rationale: "La partícula formativa del Orden se ubica al final: Hapl-ud-ANDS. 'Ands' corresponde a Andisoles."
-    },
-    {
-        q: "En el nombre 'Calciustepts', la sílaba 'ust' indica:",
-        options: ["Presencia de horizonte Cálcico", "Régimen de humedad Ústico", "Un grado de evolución simple (Haplo)", "El Orden Inceptisol"],
-        correct: 1,
-        rationale: "En el nivel de Suborden, se incluye el régimen de clima edáfico ('ust' = Ústico). El orden es Inceptisol ('ept')."
-    },
-    {
-        q: "Si un suelo cumple a la perfección el concepto central de su Gran Grupo sin desviaciones a otros taxa, al nivel de Subgrupo se le antepone el adjetivo:",
-        options: ["Humic", "Aquic", "Typic", "Lithic"],
-        correct: 2,
-        rationale: "El adjetivo 'Typic' denota que el perfil es representativo 100% del concepto del Gran Grupo."
-    },
-    {
-        q: "El Subgrupo 'Lithic Sombriustox' se diferencia del típico porque presenta una condición aberrante (Extragrado) referida a:",
-        options: ["Exceso de hierro", "Drenaje pobre", "Presencia de un contacto de roca dura (lítico) a menos de 125 cm", "Acumulación de materia orgánica extra"],
-        correct: 2,
-        rationale: "El término Lithic indica una limitante física inusual (roca masiva) antes de la profundidad normal del perfil."
-    },
-    {
-        q: "En la categoría 'Familia', los suelos se dividen según criterios aplicados principalmente al uso y manejo, entre los cuales NO se incluye:",
-        options: ["Clase por tamaño de partículas (Ej. arcillosa, franco fina)", "Clase mineralógica (Ej. caolinítica, mezclada)", "Clase por actividad de intercambio (Ej. superactiva, subactiva)", "Régimen pluviométrico atmosférico"],
-        correct: 3,
-        rationale: "La familia utiliza granulometría, mineralogía, CIC y regímenes térmicos EDÁFICOS, no el clima atmosférico global."
-    },
-    {
-        q: "La 'Serie' de suelos (última categoría) se nombra usualmente utilizando:",
-        options: ["Un polinomio descriptivo en latín", "Raíces griegas concatenadas", "Nombres geográficos locales o del sitio donde se describió por primera vez", "Símbolos numéricos exclusivamente"],
-        correct: 2,
-        rationale: "Rompe la nomenclatura formativa y usa toponimia local (Ej. Serie Tibaitatá, Serie Río Bogotá)."
-    },
-    {
-        q: "En el orden 'Gelisoles' (terminación EL), la característica diagnóstica excluyente es la presencia de:",
-        options: ["Materiales álbicos lavados", "Permafrost o materiales gélicos crioturbados", "Arcillas de tipo haloisita", "Nódulos de caliche profundo"],
-        correct: 1,
-        rationale: "Son suelos de climas árticos o elevaciones extremas con temperatura edáfica bajo cero."
-    },
-    {
-        q: "Según el sistema de la FAO/UNESCO, un suelo dominado por material parental de cenizas volcánicas (equivalente al Andisol USDA) es el grupo:",
-        options: ["Ferralsol", "Arenosol", "Andosol", "Luvisol"],
-        correct: 2,
-        rationale: "La terminología FAO guarda raíces similares; Andosoles ('Ando' = suelo oscuro) son los equivalentes a los Andisoles."
-    },
-    {
-        q: "El Sistema Brasileño de Clasificación es particularmente útil y promisorio porque:",
-        options: ["Hace gran énfasis en las arcillas de baja actividad y los sesquióxidos típicos del trópico", "Fue creado exclusivamente para clasificar Gelisoles", "Utiliza únicamente el clima foliar para agrupar", "Descarta el uso de análisis de laboratorio"],
-        correct: 0,
-        rationale: "Desarrollado en Brasil, adapta mejor la pedogénesis de la intensa ferralitización tropical (Latosoles, Terras Roxas)."
-    },
-    {
-        q: "El orden de los 'Entisoles' agrupa suelos que típicamente presentan:",
-        options: ["Altísima pedogénesis con horizontes B oxicos", "Menor o nulo grado de evolución genotípica, carentes de horizontes B", "Estructura prismática profunda", "Endopedones Argílicos saturados"],
-        correct: 1,
-        rationale: "Son suelos muy jóvenes o alterados constantemente (ej. dunas, aluviones recientes) que no han desarrollado horizontes genéticos (solo A y C)."
+    // --- NAVEGACIÓN PRINCIPAL ---
+    function openChapter(chapterKey, chapterTitle) {
+        if (!window.soilData || !window.soilData[chapterKey]) {
+            alert('Error: No se pudieron cargar los datos del capítulo.');
+            return;
+        }
+        
+        currentData = window.soilData[chapterKey];
+        document.getElementById('current-chapter-title').innerText = chapterTitle;
+        
+        // Transición de UI
+        document.getElementById('main-menu').style.display = 'none';
+        document.getElementById('study-area').style.display = 'block';
+        
+        // Reset y preparar herramientas
+        switchTab('flashcards');
+        currentCard = 0;
+        loadCard();
+        initQuiz();
     }
-];
+
+    function goHome() {
+        document.getElementById('study-area').style.display = 'none';
+        document.getElementById('main-menu').style.display = 'flex';
+    }
 
     // --- SISTEMA DE PESTAÑAS (TABS) ---
     function switchTab(tabId) {
@@ -609,13 +469,13 @@
     }
 
     // --- LÓGICA FLASHCARDS ---
-    let currentCard = 0;
-    
     function loadCard() {
-        const item = data[currentCard];
-        document.getElementById('fc-front').innerText = item.q;
+        if (!currentData || currentData.length === 0) return;
         
-        // Corrección: Usar la opción correcta y el rationale en lugar de 'item.a' (que no existía)
+        const item = currentData[currentCard];
+        document.getElementById('fc-front').innerText = item.q;
+        document.getElementById('fc-counter').innerText = `${currentCard + 1} / ${currentData.length}`;
+        
         const correctAnswer = item.options[item.correct];
         document.getElementById('fc-back-ans').innerText = correctAnswer;
         document.getElementById('fc-back-rat').innerText = item.rationale;
@@ -628,38 +488,38 @@
     }
     
     function nextCard() { 
-        currentCard = (currentCard + 1) % data.length; 
+        currentCard = (currentCard + 1) % currentData.length; 
         loadCard(); 
     }
     
     function prevCard() { 
-        currentCard = (currentCard - 1 + data.length) % data.length; 
+        currentCard = (currentCard - 1 + currentData.length) % currentData.length; 
         loadCard(); 
     }
     
     function randomCard() {
         let newCard;
         do {
-            newCard = Math.floor(Math.random() * data.length);
-        } while (newCard === currentCard && data.length > 1);
+            newCard = Math.floor(Math.random() * currentData.length);
+        } while (newCard === currentCard && currentData.length > 1);
         currentCard = newCard;
         loadCard();
         document.getElementById('flashcard').classList.remove('flip');
     }
 
     // --- LÓGICA QUIZ ---
-    let currentQuiz = 0;
-    let score = 0;
-    let quizQuestions = [];
-
-    // Inicializar y barajar preguntas para el quiz
     function initQuiz() {
-        quizQuestions = [...data].sort(() => Math.random() - 0.5);
+        if (!currentData || currentData.length === 0) return;
+        
+        // Barajar preguntas
+        quizQuestions = [...currentData].sort(() => Math.random() - 0.5);
         currentQuiz = 0;
         score = 0;
+        
         document.getElementById('score-val').innerText = score;
         document.getElementById('quiz-active-area').style.display = 'block';
         document.getElementById('quiz-final-area').style.display = 'none';
+        
         loadQuiz();
     }
 
@@ -686,14 +546,14 @@
         const isCorrect = selectedIndex === item.correct;
         const listItems = document.getElementById('quiz-options').children;
         
-        // Deshabilitar clics una vez respondido
+        // Deshabilitar clics
         for(let li of listItems) { li.classList.add('disabled'); }
         
         const feedbackDiv = document.getElementById('quiz-feedback');
         const feedbackTitle = document.getElementById('feedback-title');
         const feedbackText = document.getElementById('feedback-text');
         
-        feedbackDiv.className = 'feedback'; // resetear clases
+        feedbackDiv.className = 'feedback'; 
         
         if(isCorrect) {
             score++;
@@ -704,7 +564,6 @@
             feedbackTitle.style.color = "var(--success-color)";
         } else {
             element.classList.add('wrong');
-            // Resaltar la respuesta correcta si se equivocó
             listItems[item.correct].classList.add('correct');
             feedbackDiv.classList.add('error');
             feedbackTitle.innerText = "Incorrecto";
@@ -716,7 +575,7 @@
         
         const nextBtn = document.getElementById('next-quiz-btn');
         if (currentQuiz === quizQuestions.length - 1) {
-            nextBtn.innerText = "Ver Resultados";
+            nextBtn.innerText = "Ver Resultados Finales";
         } else {
             nextBtn.innerText = "Siguiente Pregunta";
         }
@@ -738,13 +597,13 @@
         
         const percentage = Math.round((score / quizQuestions.length) * 100);
         document.getElementById('final-score-text').innerText = `${percentage}%`;
-        document.getElementById('score-circle').style.background = `conic-gradient(var(--success-color) ${percentage}%, var(--surface-color) 0%)`;
+        document.getElementById('score-circle').style.background = `conic-gradient(var(--success-color) ${percentage}%, var(--surface-solid) 0%)`;
         
         let msg = "";
-        if (percentage >= 90) msg = "¡Excelente trabajo! Eres un experto en suelos. 🏆";
-        else if (percentage >= 70) msg = "¡Muy bien! Tienes buenos conocimientos. 👍";
-        else if (percentage >= 50) msg = "Aprobado, pero puedes mejorar repasando un poco más. 📚";
-        else msg = "Necesitas estudiar más. ¡Intenta practicar con las flashcards! 💪";
+        if (percentage >= 90) msg = "¡Excelente trabajo! Dominas completamente este capítulo. 🏆";
+        else if (percentage >= 70) msg = "¡Muy bien! Tienes bases sólidas. 👍";
+        else if (percentage >= 50) msg = "Aprobado, pero asegúrate de repasar los conceptos clave. 📚";
+        else msg = "Necesitas estudiar más. ¡Vuelve a las flashcards para afianzar la teoría! 💪";
         
         document.getElementById('final-msg').innerText = msg;
     }
@@ -752,10 +611,6 @@
     function restartQuiz() {
         initQuiz();
     }
-
-    // Inicializar todo al cargar
-    loadCard();
-    initQuiz();
 </script>
 </body>
 </html>
